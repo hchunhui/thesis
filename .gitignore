@@ -1,0 +1,14 @@
+*.aux
+*.lof
+*.lot
+*.bbl
+*.blg
+*.thm
+*.toc
+*.out
+*.xdv
+*.log
+*.exa
+*.pdf
+!thesis/template/Readme.pdf
+*~

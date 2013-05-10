@@ -1,0 +1,74 @@
+\documentclass[capnocolon,titlechinese]{ustcthesis}
+\usepackage{metalogo}
+%\usepackage{floatrow}
+\usepackage{verbatim}
+
+% 设置图形文件的搜索路径
+\graphicspath{{figures/}}
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 封面部分
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % 中文封面内容
+  %如果使用\makeseparatetitle命令生成扉页，当中文标题过长时可以将多余的标题放在\titletail{}中
+  \title{本科毕业论文}
+  \titletail{模板}
+  \entitle{An example article of the USTC-Thesis Template for Undergraduate Students}
+  %全角空格可以正常输出
+  \author{李四}
+  \enauthor{Li Si}
+  \department{计算机科学与技术学院}
+  \No{PB09210000}
+  \tutor{张三\ 教授}
+  \entutor{Prof.San Zhang}
+  \cntime{二〇一三年五月}
+  \entime{May,2013}
+  %生成封面（制本厂要求的格式）
+  \makecover
+  % 扉页形式
+  %生成中英文合并的扉页
+  \maketitle
+  %生成中英文分开的扉页
+  \makeseparatetitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 前言部分
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frontmatter
+
+  % 致谢
+  \include{thanks}
+  % 目录
+
+  \tableofcontents
+  % 摘要
+  \include{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 正文部分
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mainmatter
+  \include{chap-intro}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 附件部分
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\backmatter
+
+  % 参考文献
+  % 使用 BibTeX
+  \phantomsection
+  \addcontentsline{toc}{chapter}{参考文献}
+  \bibliography{tex}
+  \nocite{*} % for every item
+
+
+  % 附录
+  \begin{appendix}
+    \include{chap-app}
+  \end{appendix}
+
+
+
+\end{document}
