@@ -18,7 +18,8 @@
 %现在可以设置单面或者双面选项
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ctexbook}}
 \ProcessOptions
-\LoadClass[12pt,a4paper,fancyhdr,fntef]{ctexbook}
+\LoadClass[12pt,a4paper,fancyhdr,fntef,nofonts]{ctexbook}
+\input{fontsel.def}
 
 %%Packages
 \RequirePackage{amsmath}
