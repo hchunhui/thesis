@@ -10,5 +10,8 @@
 *.log
 *.exa
 *.pdf
+*.nav
+*.snm
+*.vrb
 !thesis/template/Readme.pdf
 *~
