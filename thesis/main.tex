@@ -1,7 +1,9 @@
 \documentclass[capnocolon,titlechinese]{ustcthesis}
+\usepackage{coqdoc}
 \usepackage{metalogo}
 %\usepackage{floatrow}
 \usepackage{verbatim}
+
 
 % 设置图形文件的搜索路径
 \graphicspath{{figures/}}
@@ -11,16 +13,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % 中文封面内容
   %如果使用\makeseparatetitle命令生成扉页，当中文标题过长时可以将多余的标题放在\titletail{}中
-  \title{本科毕业论文}
-  \titletail{模板}
-  \entitle{An example article of the USTC-Thesis Template for Undergraduate Students}
+  \title{分离逻辑的定理证明器的}
+  \titletail{设计与实现}
+  \entitle{Design and Implementation of Separation Logic Theorem Prover}
   %全角空格可以正常输出
-  \author{李四}
-  \enauthor{Li Si}
+  \author{何春晖}
+  \enauthor{He Chunhui}
   \department{计算机科学与技术学院}
-  \No{PB09210000}
-  \tutor{张三\ 教授}
-  \entutor{Prof.San Zhang}
+  \No{PB09210183}
+  \tutor{冯新宇\ 教授}
+  \entutor{Prof.Feng Xinyu}
   \cntime{二〇一三年五月}
   \entime{May,2013}
   %生成封面（制本厂要求的格式）
@@ -29,7 +31,7 @@
   %生成中英文合并的扉页
   \maketitle
   %生成中英文分开的扉页
-  \makeseparatetitle
+  %\makeseparatetitle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 前言部分
@@ -49,7 +51,15 @@
 %% 正文部分
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \mainmatter
-  \include{chap-intro}
+  \include{chap-intro}  %绪论
+  \include{chap-struct} %证明器的总体设计
+  \include{chap-proof}  %Coq证明项的构造概述
+  \include{chap-sat}    %命题逻辑命题的证明
+  \include{chap-euf}    %等词与未解释函数理论命题的证明
+  \include{chap-lia}    %线性整数理论命题的证明
+  \include{chap-no}     %理论整合框架的实现
+  \include{chap-sep}    %分离逻辑命题的证明
+  \include{chap-end}    %总结
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 附件部分
