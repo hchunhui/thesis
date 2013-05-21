@@ -64,7 +64,7 @@ $\Sigma$和$\Sigma'$是包含分离逻辑符号的公式。为简化起见，分
 
 \subsection{相关概念}
 \subsubsection{Curry-Howard同构}
-Curry-Howard同构\cite{}是指逻辑演算系统与程序类型系统的相对应关系。它指出，自然推理系统与$\lambda$-演算的对应关系如表\ref{tab:curry}。
+Curry-Howard同构\cite{HowardWA:fortnc}是指逻辑演算系统与程序类型系统的相对应关系。它指出，自然推理系统与$\lambda$-演算的对应关系如表\ref{tab:curry}。
 \begin{table}[!ht]
   \label{tab:curry}
   \caption{自然推理系统与$\lambda$-演算的对应关系}
@@ -93,7 +93,7 @@ $$\lambda (H_0: P).(\lambda (H_1: Q).H_0)$$
 \subsubsection{归纳构造演算与Coq}
 归纳构造演算（Calculus of Inductive Constructions）是一种$\lambda$-演算的扩展，它结合了逻辑中的一些最新进展，因而能力更强。
 
-Coq是一个基于归纳构造演算的高阶逻辑定理证明辅助系统。其独到之处在于，表达程序和表达证明都使用同一套语言。
+Coq\cite{coq}是一个基于归纳构造演算的高阶逻辑定理证明辅助系统。其独到之处在于，表达程序和表达证明都使用同一套语言。
 
 上一节L1的证明用Coq证明项表达如下：
 \begin{verbatim}
