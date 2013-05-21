@@ -60,6 +60,64 @@ $\Sigma$和$\Sigma'$是包含分离逻辑符号的公式。为简化起见，分
 由于分离逻辑隐式包含了堆，这在纯的一阶逻辑中是没有的。因此图中的语义定义主要说明了一阶逻辑符号拓展到有堆出现时的意义。
 
 \section{证明项}
+证明项是一种语言，它可以用来表示证明的推理过程。本文实现的证明器通过对每一个命题出具Coq兼容的证明项，来满足携带证明代码对携带机器可检查证明的要求。
+
+\subsection{相关概念}
+\subsubsection{Curry-Howard同构}
+Curry-Howard同构\cite{}是指逻辑演算系统与程序类型系统的相对应关系。它指出，自然推理系统与$\lambda$-演算的对应关系如表\ref{tab:curry}。
+\begin{table}[!ht]
+  \label{tab:curry}
+  \caption{自然推理系统与$\lambda$-演算的对应关系}
+  \centering
+  \begin{tabular}{cc}
+    \whline
+    自然推理 & $\lambda$-演算 \\
+    \hline
+    假设 & 对应类型的自由变量 \\
+    蕴含引入 & 函数抽象 \\
+    蕴含消去 & 函数应用 \\
+    定理 & 对应类型的表达式 \\
+    \whline
+  \end{tabular}
+\end{table}
+
+于是，命题的证明问题就可以看作一个寻找对应类型的$\lambda$-表达式的过程。
+例如，我们欲证明希尔伯特系统中的L1：
+$$ \vdash P \impl (Q \impl P) $$
+
+我们可以构造如下$\lambda$-表达式：
+$$\lambda (H_0: P).(\lambda (H_1: Q).H_0)$$
+
+上式的类型为$P \impl (Q \impl P) $，因此它是L1的一个证明。
+
+\subsubsection{归纳构造演算与Coq}
+归纳构造演算（Calculus of Inductive Constructions）是一种$\lambda$-演算的扩展，它结合了逻辑中的一些最新进展，因而能力更强。
+
+Coq是一个基于归纳构造演算的高阶逻辑定理证明辅助系统。其独到之处在于，表达程序和表达证明都使用同一套语言。
+
+上一节L1的证明用Coq证明项表达如下：
+\begin{verbatim}
+    (fun H0:P => (fun H1:Q => H0))
+\end{verbatim}
+
+\subsection{表达证明项的数据结构}
+我们将证明项保存为一个类似$\lambda$-表达式的形式。
+
+证明项类型叫做\texttt{proof}，定义用类ML语言描述如下：
+\begin{verbatim}
+    type param = (string * prop)        (* 参数 *)
+    type proof =
+    | Hole                               (* 空 *)
+    | Id of string      (* 公理、定理、变量标识 *)
+    | Lam of param list * proof    (* 函数抽象 *)
+    | App of proof list            (* 函数应用 *)
+\end{verbatim}
+
+\texttt{Lam}和\texttt{App}构造分别模拟$\lambda$-表达式的函数抽象和函数应用。唯一不同的是，参数部分都被扩展成了列表，以更加便于实际使用。
+
+\texttt{Hole}代表空，意味着没有找到命题的证明。
+
+\texttt{proof}并不能表达纳构造演算的所有构造，但是在本文设计的证明器是足够用的。
 
 \section{结构及流程}
 
@@ -88,6 +146,8 @@ $\Sigma$和$\Sigma'$是包含分离逻辑符号的公式。为简化起见，分
 分离逻辑的证明器综合两式，得到命题的最终证明。
 
 \subsection{一阶逻辑的证明器所做的工作}
+一阶逻辑的证明器结构属于目前较先进的SMT（Satisfiability Modulo Theories）证明器结构。
+
 对于每一个被发送到一阶逻辑的证明器的命题，首先经过命题逻辑证明模块。该模块将所有不同的公式项看作一个独立的命题变元，最终化简成为约束满足（SAT）问题，该步的具体方法在第\ref{chap:sat}章说明。
 
 由于命题逻辑证明求解时不会关心命题公式项的具体内容，因此它在求解时会生成一系列可能否证命题的``反例''赋值。这些``反例''重新构成命题后被发送到理论整合框架。在这个框架中，命题被按照公式项分成不同的部分，送给不同的理论求解器求解。由于考察公式项的具体结构，``反例''将被一一反驳。该步具体方法在第\ref{chap:euf}、\ref{chap:lia}、\ref{chap:no}章说明。
