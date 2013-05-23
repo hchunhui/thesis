@@ -9,6 +9,7 @@
     $\Pi$ & \sep{} & $Y$ \deli{} $\lnot \Pi$ \deli{} $\Pi \impl \Pi$ \deli{} $\Pi \land \Pi$ \deli{} $\Pi \lor \Pi$ \\
   \end{tabular}
   \caption{命题逻辑语言}
+  \label{sat:syntax}
 \end{figure}
 本部分接收的语言是纯一阶逻辑命题的命题框架。命题框架是指，不理会原子公式的具体结构，只是简单地将不同的原子公式看作不同的命题变元。
 
@@ -120,7 +121,7 @@ $$\alpha' \land E \vdash (P \impl \mathrm{false}) \impl (\lnot P \impl \mathrm{f
 \subsection{规范到否定范式}
 规范到否定范式一共要做两件事：消除蕴含词$\impl$；将否定词$\lnot$深入到文字上，并且保证文字前最多只有一个否定词。
 
-从语法结构的观点看，本步骤实际上是由一棵语法树变换到另一棵语法树。由于语法树是由图\ref{sat:stru}构造地定义的，因此只需要考察每一个局部结构的变化情况，再逐级递归即可。
+从语法结构的观点看，本步骤实际上是由一棵语法树变换到另一棵语法树。由于语法树是由图\ref{sat:syntax}构造地定义的，因此只需要考察每一个局部结构的变化情况，再逐级递归即可。
 
 \subsubsection{变换分类}
 变换一共分两种情形：A型、B型。图中虚线代表递归时应该看作整体。
