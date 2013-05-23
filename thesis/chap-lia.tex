@@ -12,8 +12,44 @@
     $\Pi$ & \sep{} & $T$ \deli{} $\Pi \land \Pi$ \\
   \end{tabular}
 \end{figure}
-本部分接收的语言是关于整数环上的线性不等式组。目标是证明不等式组的不一致性。
+本部分接收的语言是关于整数环上的线性不等式组，目标是证明不等式组的不可满足性。
 
 \section{结构}
 \section{单纯形法}
-\subsection{规范化过程}
+\subsection{标准型}
+单纯形法是线性规划理论中的一种最优化方法。
+
+原始的单纯形法解决的问题的标准型为：
+\begin{eqnarray*}
+  \max Z = c_1x_1 + c_2x_2 + \cdots + c_nx_n \\
+  \begin{cases}
+    a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = b_1 \\
+    a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n = b_2 \\
+    \dots \\
+    a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n = b_m \\
+    x_j \ge 0, \quad j = 1, 2, \cdots, n \\
+    b_i \ge 0, \quad i = 1, 2, \cdots, m \\
+  \end{cases}
+\end{eqnarray*}
+任意的线性规划问题经过适当变换后均可以转换为标准型。
+
+单纯形法在求解时，首先要找到一组初始解，它满足约束条件，但未必最优。接下来，从初始解开始经过一系列迭代，最终达到最优解。如果初始解找不到，则说明问题无解。
+
+单纯形法找初始解的特性为线性不等式组的可满足判定提供了一种天然方法。即若能找到初始解，则不等式组可满足，否则不可满足。
+
+依据上述思路，定义本文中单纯形法解决可满足问题的标准型如下：
+\begin{eqnarray*}
+  \begin{cases}
+    a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = s_1 \\
+    a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n = s_2 \\
+    \dots \\
+    a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n = s_m \\
+    x_j \textrm{无限制}, \quad j = 1, 2, \cdots, n \\
+    s_i \le b_i, \quad i = 1, 2, \cdots, m \\
+    b_i \in \mathbb{Q}, \quad i = 1, 2, \cdots, m \\
+  \end{cases}
+\end{eqnarray*}
+
+上述标准型中去掉了优化函数$Z$，因为可满足求解不关心；其次将$x_j$的限制放开，减少变换负担；最后在等式右边加入了$m$个有界的\emph{松弛变量}，作用也是减少通常形式到标准型的负担。
+
+\section{规范化过程}
