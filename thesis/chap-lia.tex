@@ -12,9 +12,8 @@
     $\Pi$ & \sep{} & $T$ \deli{} $\Pi \land \Pi$ \\
   \end{tabular}
 \end{figure}
-本部分接收的语言是关于整数环上的线性不等式组，目标是证明不等式组的不可满足性。
+本部分接收的语言是关于整数环上的线性不等式组，目标是证明不等式组的不可满足性。$\neq$和$>$关系分别是$=$和$\leq$关系的否定形式。
 
-\section{结构}
 \section{单纯形法}
 \subsection{标准型}
 单纯形法是线性规划理论中的一种最优化方法。
@@ -45,11 +44,83 @@
     \dots \\
     a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n = s_m \\
     x_j \textrm{无限制}, \quad j = 1, 2, \cdots, n \\
-    s_i \le b_i, \quad i = 1, 2, \cdots, m \\
+    s_i \leq b_i, \quad i = 1, 2, \cdots, m \\
     b_i \in \mathbb{Q}, \quad i = 1, 2, \cdots, m \\
   \end{cases}
 \end{eqnarray*}
 
 上述标准型中去掉了优化函数$Z$，因为可满足求解不关心；其次将$x_j$的限制放开，减少变换负担；最后在等式右边加入了$m$个有界的\emph{松弛变量}，作用也是减少通常形式到标准型的负担。
 
-\section{规范化过程}
+至此，所有的不等关系都可以化为适当的标准形式，以$x_1+x_2 \mathrm{op} 1$为例
+\begin{itemize}
+  \item 若op为$\leq$，标准形式为$x_1+x_2 = s_k, \quad s_k \leq b_k = 1$
+  \item 若op为$>$，标准形式为$-1 \cdot x_1 + -1 \cdot x_2 = s_k, \quad s_k \leq b_k = -2$
+  \item 若op为$=$，标准形式为$x_1+x_2 = s_k, \quad s_k \leq b_k = 1$和$-1 \cdot x_1 + -1 \cdot x_2 = s_k, \quad s_k \leq b_k = -1$
+  \item 若op为$\neq$，分为两个目标，标准形式分别为$x_1+x_2 = s_k, \quad s_k \leq b_k = 0$和$-1 \cdot x_1 + -1 \cdot x_2 = s_k, \quad s_k \leq b_k = -2$
+\end{itemize}
+
+\subsection{决策过程}
+单纯形法的求解使用单纯形表。单纯形表是一个$m$行$n$列的矩阵外加一个$n$列的向量。矩阵的每一行对应一个\emph{基变量}，每一列对应一个\emph{非基变量}。向量每一列代表对应非基变量当前的赋值。
+
+\begin{enumerate}
+  \item 初始时，每一行对应松弛变量$s_i$，每一列对应原始变量$x_j$，矩阵是标准型的系数。向量各分量为零。
+  \item 接下来，循环求解直到找到可满足实例或不可满足。
+    \begin{enumerate}
+      \item 首先，检查越界基变量。方法是检查所有代表松弛变量的行$i$，计算$s_i' = \sum_{j=1}^{n} a_{ij} \cdot x_j'$，其中$x_j'$是第$j$列代表的非基变量。若$s_i' > b_i$，$b_i$是松弛变量上界，则说明越界，需要进一步调整。否则，已找到可满足实例，返回``可满足''。
+      \item 然后，重新指派非基变量赋值。由于$s_i' = \sum_{j=1}^{n} a_{ij} \cdot x_j'$越上界，因此需要减少某个系数为正的非基变量，或增加某个系数为负的非基变量，最终使得$s_i'$刚好为$b_i$，同时保持所有非基变量也不越界。若找不到，则说明原问题不可满足，返回``不可满足''。
+      \item 最后，进行\emph{旋转}操作。旋转操作的目的是交换前两步选中的基变量和非基变量的位置。方法是从$s_i' = \sum_{j=1}^{n} a_{ij} \cdot x_j'$反解出被调整的非基变量$x_k'$，然后代入到其他各行并化简。这步对应矩阵的一系列行变换。
+    \end{enumerate}
+\end{enumerate}
+
+\subsection{证明项构造}
+证明项的构造基于决策过程返回``不可满足''时的单纯形表进行。
+
+证明项构造基于决策过程结束时单纯形表的一个性质：
+\begin{theorem}[性质1]
+  决策过程返回``不可满足''时，单纯形表的所有非基变量都是松弛变量。
+\end{theorem}
+\begin{proof}
+反设决策过程返回``不可满足''时，存在某一非基变量$x_j'$不是松弛变量。则$x_j'$是原始变量，$x_j'$取值无限制。因此能够通过减小或增大$x_j'$的取值，使得越界基变量刚好不越界。这与返回``不可满足''矛盾。
+\end{proof}
+
+\begin{theorem}[性质2]
+  决策过程返回``不可满足''时，单纯形表中越界基变量所在行的所有系数为非正。
+\end{theorem}
+\begin{proof}
+反设决策过程返回``不可满足''时，越界基变量行存在某一系数$a_{ij} > 0$。由性质1知，$x_j'$为松弛变量，故无下界。因此可以减小$x_j'$，使得基变量刚好不越界。这与返回``不可满足''矛盾。
+\end{proof}
+
+现在可以说明证明的构造方法。\\
+设越界变量为$s_i'$，$s_i' = \sum_{j=1}^{n} a_{ij} \cdot x_j'$，$s_i' \leq b_i$。\\
+由性质1可保证，对$1 \leq j \leq n$，$x_j'$有上界，即$x_j' \leq b_j'$。\\
+由性质2可保证，对$1 \leq j \leq n$，$a_{ij} \leq 0$，即$a_{ij} \cdot x_j' \geq a_{ij} \cdot b_j'$。\\
+因此$s_i' = \sum_{j=1}^{n} a_{ij} \cdot x_j' \geq \sum_{j=1}^{n} a_{ij} \cdot b_j' > b_i$，与$s_i' \leq b_i$得到矛盾。
+
+上述过程除了计算之外，需在Coq中定义如下引理：
+\begin{verbatim}
+Lemma volatile : forall x a : Z, x <= a /\ x > a -> False .
+\end{verbatim}
+应用上述引理即可构造出证明项。
+
+\section{分支限界法}
+单纯形法解决的是$\mathbb{Q}$上的线性不等式组的可满足性问题。但是对于一些约束条件，如$4 \leq 3 \cdot x \leq 5$，在$\mathbb{Q}$上可满足，但在我们讨论的$\mathbb{Z}$上是不可满足的。分支限界法用来解决本问题。
+\subsection{决策过程}
+分支限界法主要通过逐步通过分割可行域，逐步减小搜索范围的办法，将$\mathbb{Q}$上的判定过程转换为$\mathbb{Z}$上的判定过程。
+\begin{enumerate}
+  \item 首先以原始的不等式组作为输入，调用单纯形法决策过程。
+  \item 根据单纯形法返回值：
+    \begin{enumerate}
+      \item 若为``不可满足''，则$\mathbb{Z}$上也不可满足，返回``不可满足''；
+      \item 若为``可满足''，且可满足实例所有分量为整数，则返回``可满足''；
+      \item 若为``可满足''，且可满足实例某一分量$x$为分数$\frac{a}{b}$，则分割为两部分：一部分补充不等式$x \leq \lfloor \frac{a}{b} \rfloor$，另一部分补充不等式$x \geq \lceil \frac{a}{b} \rceil$，然后分别递归求解。
+    \end{enumerate}
+\end{enumerate}
+
+\subsection{证明项构造}
+这里证明项的构造是简单的。只要刻画分支的行为即可。
+
+定义如下Coq引理：
+\begin{verbatim}
+Lemma branch : forall x a : Z, ( x <= a -> False ) -> ( x > a -> False ) -> False.
+\end{verbatim}
+即可。
