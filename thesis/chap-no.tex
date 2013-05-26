@@ -1,8 +1,62 @@
 \chapter{理论整合框架的实现}
 \label{chap:no}
 
+理论整合框架的作用是，将一个含有多种理论的命题分解成一组命题，两者的可满足性是相同的，且命题组的每一个命题只含某一个理论所能处理的符号。
+
 \section{Nelson-Oppen框架}
+Nelson-Oppen框架是Nelson和Oppen在19？？年提出的解决理论整合的方案。它的主要步骤如下：
+\begin{description}
+  \item[纯化] 通过引入新变量，将混合的理论分开。
+
+    如命题$x = 1 \land f(2) = 1 \land \lnot f(+(1,x))=1$经过纯化后，变成$x = u \land f(v) = u \land \lnot f(w)=u$和$u = 1 \land v = 2 \land w = +(1, x)$，前者属于等词与未解释函数理论，后者属于线性整数理论。
+  \item[证明] 将纯化公式送往对应理论求解器求解。若某个理论返回``不可满足''，则返回``不可满足''。
+  \item[等式传播] 分如下情况：
+
+    若某理论能够推出等式$x = y$，将$x = y$加入其他理论并重启证明。
+
+    若某个理论能够推出$x_1 = y_1 \lor \cdots \lor x_k = y_k$，则分成k种情况，依次将$x_1 = y_1, \dots, x_k = y_k$加入其他理论并证明。若某一种情况返回``可满足''，则返回可满足；否则返回``不可满足''。
+
+    若无法推出新的等式，返回``可满足''。
+\end{description}
 
 \section{实现}
+Nelson-Oppen框架实现的难点在于等式传播，而其他部分的实现都是直接的。
+
+等式传播的主要问题是，前述的两种理论求解器都只能证实结论，却不能主动推出结论。
+
+如对于命题$x \leq 1 \land 1 leq x \impl f(x) = f(1)$，经过否定并规范化后得到$x \leq 1 \land 1 \leq x \land \lnot f(x) = f(1)$。我们的期望是$x \leq 1 \land 1 \leq x$送给线性整数求解器得到$x=1$，然后将等式传播给未解释函数求解器，就能得到不可满足的结论。
+
+本文曾经试图改造线性整数求解器，使之能够在某些可满足的情形下附加一组等式，提供闭合可行域中的所有取值，然后一一送给其他求解器求解。这种改造方法在一些特殊的例子下工作得很好，甚至能够解决形如$1 \leq x \land x \leq 3 \land f(1)=1 \land f(2)=2 \land f(3)=3 \impl f(x)=x$这样的``归纳型''命题。
+
+然而，处理命题$x \leq y \land y \leq x \impl f(x) = f(y)$时却遇到困难。原因是条件$x \leq y \land y$确定的区域含有无限个点。若不传播，则命题无法证明；若传播，则会进入死循环。
+
+一种办法是让未解释函数求解器也作出提示，如由$\not f(x) = f(y)$猜测线性整数证明器应该证明$x=y$。
+
+另外，材料\cite{Harrison:2009:HPL:1540610}给出一个近似于穷举所有中间结论并证明的方法。这种方法不需要对理论证明器做修改，模块性较好。
 
 \section{证明项的生成}
+Nelson-Oppen框架涉及证明项求解的部分是命题的纯化部分。
+
+仍以
+$$x = 1 \land f(2) = 1 \land \lnot f(+(1,x))=1$$
+为例说明如何生成证明项。
+
+上述命题在纯化之后，实际证明的是
+$$x = u \land f(v) = u \land \lnot f(w)=u \land u = 1 \land v = 2 \land w = +(1, x) \impl false$$
+
+下面构造
+\begin{align*}
+x = 1 \land f(2) = 1 \land \lnot f(+(1,x))=1 \impl \\
+x = u \land f(v) = u \land \lnot f(w)=u \land u = 1 \land v = 2 \land w = +(1, x)
+\end{align*}
+的证明项，然后应用$\impl$的传递特征，就能得到
+$$x = 1 \land f(2) = 1 \land \lnot f(+(1,x))=1 \impl false$$
+的证明项。
+
+而证明项可由下述Coq的引理构造：
+\begin{verbatim}
+Lemma eq_ind : forall (A : Type) (x : A) (P : A -> Prop),
+               P x -> forall y : A, x = y -> P y .
+\end{verbatim}
+
+这就完成了证明项的构造。
