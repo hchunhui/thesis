@@ -135,11 +135,11 @@ Coq\cite{coq}是一个基于归纳构造演算的高阶逻辑定理证明辅助�
 
 这个命题的证明可以化为求证：
 \begin{eqnarray}
-  \vdash & \Pi \impl \Pi' \label{struct:eq1}\\
+  \vdash & \Pi \land \Pi'' \impl \Pi' \label{struct:eq1}\\
   \vdash & \Pi \land \Sigma \impl \Sigma' \label{struct:eq2}
 \end{eqnarray}
 
-\ref{struct:eq1}式是一个纯的一阶逻辑的证明过程，因此直接将该部分命题发送到一阶逻辑的证明器求证。
+\ref{struct:eq1}式是一个纯的一阶逻辑的证明过程，因此直接将该部分命题发送到一阶逻辑的证明器求证。其中$\Pi''$是分离逻辑部分中推出的一些算术信息，如关于指针非空和不同堆的地址不同。
 
 \ref{struct:eq2}式是一个带分离逻辑的证明过程。该部分将由分离逻辑的证明器使用分离逻辑中的定理将该过程分解成求证一系列纯一阶逻辑命题，并发送到一阶逻辑的证明器求证。该部分的方法在第\ref{chap:sep}章说明。
 

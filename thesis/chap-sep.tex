@@ -5,11 +5,108 @@
 \begin{figure}[!htbp]
   \centering
   \begin{tabular}[rcl]{rcl}
-    $E$ & \sep{} & $x$ \deli{} $a$ \deli{} $f_i(E,$\ldots$,E)$ \deli{} $+(E, E)$ \deli{} $.(a,E)$ \\
-    $T$ & \sep{} & $E \le E$ \deli{} $E = E$ \deli{} $A$ \\
-    $\Sigma$ & \sep{} & $E \mapsto E$ \deli{} $\Sigma \ast \Sigma$ \\
-    $\Delta$ & \sep{} & $\Sigma \land \Pi$ \\
+    & & $T$是公式项 \\
+    & & $\Pi$是纯一阶逻辑公式 \\
+    $H$ & \sep{} & $T \mapsto T$ \deli{} emp \\
+    $\Sigma$ & \sep{} & $H$ \deli{} $\Sigma \ast \Sigma$ \\
+    $P$ & \sep{} & $\Pi \land \Sigma \impl \Sigma'$ \\
   \end{tabular}
 \end{figure}
+第\ref{chap:struct}章已经介绍，分离逻辑的证明器将命题语言拆分为纯一阶逻辑公式和带分离逻辑的公式的过程。本章只考虑拆分后带分离逻辑的公式的证明。
 
-\section{证明方案}
+\section{决策过程}
+分离逻辑命题的证明方法是直接从蕴含式着手正向证明。证明依据的基本原理是分离逻辑中的Frame规则：
+$$ P \impl Q \vdash P \ast R \impl Q \ast R$$
+
+具体的过程如下：
+\begin{description}
+  \item[消前后件emp] emp代表的是空堆，对证明没有帮助，因此可先消去。\\
+    如果中途得到了$\mathrm{emp} \impl \mathrm{emp}$，则直接宣告命题成立。
+  \item[堆匹配] 堆匹配是一个递归搜索的过程。\\
+    设命题为$P_1 \ast P_2 \ast \cdots \ast P_m \impl Q_1 \ast Q_2 \ast \cdots Q_n$
+    \begin{itemize}
+      \item 若$m \neq n$，返回``不可证''；
+      \item 若$m = n = 0$，返回``可证''；
+      \item 否则，将$P_1$依次与$Q_k, 1 \leq k \leq n$匹配，即求证：
+        \begin{eqnarray*}
+          \Pi \vdash t_1 = t_1' \\
+          \Pi \vdash t_2 = t_2' \\
+        \end{eqnarray*}
+        其中$P_1$为$t_1 \mapsto t_2$，$Q_k$为$t_1' \mapsto t_2'$。
+
+        待证两式均为纯的一阶逻辑公式，可以用一阶逻辑证明器证明。
+
+        若有其一不可证，说明$P_1$与$Q_k$不匹配，继续匹配直到$k > n$，返回``不可证''。
+
+        若均得证，则删除$P_1$和$Q_k$，递归。
+    \end{itemize}
+
+\end{description}
+
+\section{证明项}
+\subsection{分离逻辑在Coq中的表达}
+原生的Coq没有定义分离逻辑及其符号。但由于Coq系统极强的表达能力，可以自行定义新逻辑。
+
+\subsubsection{方案}
+在Coq中定义新逻辑有两类方案。
+
+一类方案是定义语义。即将各符号的含义在Coq中表达出来，然后通过这些含义，证明对应的性质。这种方案的好处是，不会凭空引入过多公理，结构比较清晰。
+
+另一类方案是定义语法。即不定义符号的含义，直接将性质用公理的形式表达出来。这种方法引入的公理比较多，不适当地公理会引起全系统的不一致。
+
+本文采用定义语法的方案。
+
+\subsubsection{符号}
+分离逻辑引入了三个符号：$\ast$、$\mapsto$、$\mathrm{emp}$，分别是逻辑联接词、函数符号、命题。定义如下：
+\begin{verbatim}
+Parameter star : Prop -> Prop -> Prop.
+Parameter mapsto : Z -> Z.
+Parameter emp : Prop.
+\end{verbatim}
+
+\subsubsection{公理}
+$\ast$的性质：
+\begin{verbatim}
+Axiom star_comm : forall P Q : Prop, star P Q -> star Q P.
+Axiom star_assoc : forall P Q R : Prop,
+                star P (star Q R) -> star (star P Q) R.
+Axiom star_mapsto : forall t1 t2 t3 t4,
+                star (mapsto t1 = t2) (mapsto t3 = t4) -> t1 <> t3.
+\end{verbatim}
+
+$\mapsto$的性质是未解释函数的性质加上：
+\begin{verbatim}
+Axiom mapsto_0 : forall t1 t2, mapsto t1 = t2 -> t1 <> 0.
+\end{verbatim}
+
+$\mathrm{emp}$的性质：
+\begin{verbatim}
+Axiom star_emp : forall P : Prop, star P emp -> P.
+Axiom star_emp_r : forall P : Prop, P -> star P emp.
+\end{verbatim}
+
+Frame规则：
+\begin{verbatim}
+Axiom star_frame : forall P Q R:Prop, (P->Q) -> (star P R -> star Q R).
+\end{verbatim}
+
+\subsection{证明项的构造}
+证明项构造分三步：
+\begin{description}
+  \item[串联堆块] 前面对匹配的堆块$t_1 \mapsto t_2$和$t_1' \mapsto t_2'$已经得到：
+    \begin{eqnarray*}
+      \Pi \vdash t_1 = t_1' \\
+      \Pi \vdash t_2 = t_2' \\
+    \end{eqnarray*}
+    
+    应用未解释函数的引理，可得到$t_1 \mapsto t_2 \impl t_1' \mapsto t_2'$。
+
+    然后依次应用\texttt{star\_frame}公理，可以得到如下形式的定理的证明：
+    $$P_1' \ast P_2' \ast \cdots \ast P_{m'}' \impl Q_1' \ast Q_2' \ast \cdots \ast Q_{n'}'$$
+  \item[加emp] 应用\texttt{star\_emp}、\texttt{star\_emp\_r}公理，可以在上一步的基础上加入emp。
+  \item[重排] 应用\texttt{star\_comm}和\texttt{star\_assoc}公理，可以写一个递归的过程，将前后件中的各部分排到需要的位置。
+\end{description}
+
+这样，就得到了
+$P_1 \ast P_2 \ast \cdots \ast P_m \impl Q_1 \ast Q_2 \ast \cdots Q_n$
+的证明项。
