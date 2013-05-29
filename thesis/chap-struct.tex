@@ -12,10 +12,10 @@
 \begin{figure}[!htbp]
   \centering
   \begin{tabular}{rrcl}
-    整数常元 & $C$ & \sep & $\left\{ 0, 1, -1, \ldots \right\}$ \\
-    整型变元 & $X$ & \sep & $\left\{ x_0, x_1, x_2, \ldots \right\}$ \\
-    未解释函数 & $F$ & \sep & $\left\{ f_0, f_1, f_2, \ldots \right\}$ \\
-    命题变元 & $A$ & \sep & $\left\{ A_0, A_1, \ldots \right\}$ \\
+    整数常元 & $C$ & \sep & $0$ \deli{} $1$ \deli{} $-1$ \deli{} \ldots \\
+    整型变元 & $X$ & \sep & $x_0$ \deli{} $x_1$ \deli{} $x_2$ \deli{} \ldots \\
+    未解释函数 & $F$ & \sep & $f_0$ \deli{} $f_1$ \deli{} $f_2$ \deli{} \ldots \\
+    命题变元 & $A$ & \sep & $A_0$ \deli{} $A_1$ \deli{} $A_2$ \deli{} \ldots \\
     公式项  & $T$ & \sep & $C$ \deli{} $X$ \deli{} $F(T,$\ldots$,T)$ \deli{} $+(T, T)$ \deli{} $\cdot(C,T)$ \\
     一阶逻辑原子公式 & $Y$ & \sep{} & $T \le T$ \deli{} $T = T$ \deli{} $A$ \deli{} $\mathrm{true}$ \\
     一阶逻辑公式 & $\Pi$ & \sep{} & $Y$ \deli{}  $\lnot \Pi$ \deli{} $\Pi \impl \Pi$ \deli{} $\Pi \land \Pi$ \deli{} $\Pi \lor \Pi$ \\
@@ -39,7 +39,7 @@ $\Sigma$和$\Sigma'$是包含分离逻辑符号的公式。为简化起见，分
   \begin{tabular}{rcl}
     $s, h \models P$ & & \\
     $s$是栈 & & $s: T \impl \mathbb{Z}$ \\
-    $h$是堆 & & $h: \mathbb{Z} 	\backslash \{0\} \impl \mathbb{Z}$ \\
+    $h$是堆 & & $h: \mathbb{Z} 	\backslash \{0\} \rightharpoonup \mathbb{Z}$ \\
     $s, h \models t_1 = t_2$ & $\iff$ & $s(t_1) = s(t_2)$ \\
     $s, h \models t_1 \leq t_2$ & $\iff$ & $s(t_1) \leq s(t_2)$ \\
     $s, h \models \mathrm{true}$ & $\iff$ & 真 \\
