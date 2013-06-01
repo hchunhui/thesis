@@ -98,7 +98,7 @@
 
 上述过程除了计算之外，需在Coq中定义如下引理：
 \begin{verbatim}
-Lemma volatile : forall x a : Z, x <= a /\ x > a -> False .
+volatile : forall x a : Z, x <= a /\ x > a -> False .
 \end{verbatim}
 应用上述引理即可构造出证明项。
 
@@ -121,7 +121,7 @@ Lemma volatile : forall x a : Z, x <= a /\ x > a -> False .
 
 定义如下Coq引理：
 \begin{verbatim}
-Lemma branch : forall x a : Z,
-    ( x <= a -> False ) -> ( x > a -> False ) -> False.
+branch : forall x a : Z,
+        (x <= a -> False) -> (x > a -> False) -> False.
 \end{verbatim}
 即可。

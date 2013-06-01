@@ -53,7 +53,7 @@ $$x = 1 \land f(2) = 1 \land \lnot f(+(1,x))=1 \impl false$$
 
 而证明项可由下述Coq的引理构造：
 \begin{verbatim}
-Lemma eq_ind : forall (A : Type) (x : A) (P : A -> Prop),
+eq_ind : forall (A : Type) (x : A) (P : A -> Prop),
                P x -> forall y : A, x = y -> P y .
 \end{verbatim}
 

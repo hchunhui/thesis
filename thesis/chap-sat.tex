@@ -40,7 +40,7 @@ SAT求解器能够解决下列一类问题：
 
 若结果为不可满足，如图\ref{sat:stru}左半部分，则说明$\vdash \lnot \lnot \alpha$，直接将SAT求解过程的证明证明项取出，并应用在Coq定义的双重否定引理：
 \begin{verbatim}
-  Lemma NNPP : forall p:Prop, ~ ~ p -> p.
+  NNPP : forall p:Prop, ~ ~ p -> p.
 \end{verbatim}
 即可得证。
 
@@ -160,19 +160,19 @@ $$\alpha' \land E \vdash (P \impl \mathrm{false}) \impl (\lnot P \impl \mathrm{f
 
 \paragraph{A型引理}
 \begin{verbatim}
-Lemma L_and: forall A B C D:Prop, (A<->B)->(C<->D)->((A/\C)<->(B/\D)).
-Lemma L_or: forall A B C D:Prop, (A<->B)->(C<->D)->((A\/C)<->(B\/D)).
-Lemma L_not: forall A B:Prop, (A<->B)->((~A)<->(~B)).
-Lemma iff_p: forall P:Prop, P<->P.
+L_and : forall A B C D:Prop, (A<->B)->(C<->D)->((A/\C)<->(B/\D)).
+L_or : forall A B C D:Prop, (A<->B)->(C<->D)->((A\/C)<->(B\/D)).
+L_not : forall A B:Prop, (A<->B)->((~A)<->(~B)).
+iff_p : forall P:Prop, P<->P.
 \end{verbatim}
 
 \paragraph{B型引理}
 \begin{verbatim}
-Lemma iff_nand: forall P Q:Prop, ~(P/\Q) <-> (~P\/~Q).
-Lemma iff_nor: forall P Q:Prop, ~(P\/Q) <-> (~P/\~Q).
-Lemma iff_nnp: forall P:Prop, ~~P<->P.
-Lemma iff_imp: forall P Q:Prop, (P->Q)<->(~P\/Q).
-Lemma iff_nimp: forall P Q:Prop, ~(P->Q)<->(P/\~Q).
+iff_nand : forall P Q:Prop, ~(P/\Q) <-> (~P\/~Q).
+iff_nor : forall P Q:Prop, ~(P\/Q) <-> (~P/\~Q).
+iff_nnp : forall P:Prop, ~~P<->P.
+iff_imp : forall P Q:Prop, (P->Q)<->(~P\/Q).
+iff_nimp : forall P Q:Prop, ~(P->Q)<->(P/\~Q).
 \end{verbatim}
 
 \subsection{规范到合取范式}
@@ -203,15 +203,15 @@ $$ \vdash P \lor (Q \land R) \impl P $$
 
 由于前件是否定范式，很容易根据$\land$和$\lor$的结构，写一个递归过程，引用Coq如下定理得到证明：
 \begin{verbatim}
-Lemma and_ind : forall A B P : Prop, (A -> B -> P) -> A /\ B -> P.
-Lemma or_ind : forall A B P : Prop, (A -> P) -> (B -> P) -> A \/ B -> P.
+and_ind : forall A B P : Prop, (A -> B -> P) -> A /\ B -> P.
+or_ind : forall A B P : Prop, (A -> P) -> (B -> P) -> A \/ B -> P.
 \end{verbatim}
 
 \paragraph{补齐其余部分}
 写一个递归过程，引用下列Coq定理，补齐合取支的其他部分。
 \begin{verbatim}
-Lemma or_introl : forall A B : Prop, A -> A \/ B.
-Lemma or_intror : forall A B : Prop, B -> A \/ B.
+or_introl : forall A B : Prop, A -> A \/ B.
+or_intror : forall A B : Prop, B -> A \/ B.
 \end{verbatim}
 本例中，可用\texttt{or\_introl}由$P$得到$P \lor Q$；用\texttt{or\_intror}由$P$得到$R \lor P$。
 
