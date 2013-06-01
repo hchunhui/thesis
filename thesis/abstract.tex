@@ -1,11 +1,23 @@
 \begin{cnabstract}
-本文针对程序验证中定理自动证明的需求，从头实现了一个分离逻辑的定理证明器。相比Z3等自动证明系统，本文实现的证明器能够验证分离逻辑的定理，并且能够输出Coq兼容的证明项；而相比Coq等交互式证明系统，则具有完全自动化、验证速度快的优势。从而在定理证明器的表达能力、自动化和可信性三方面达到了较好的平衡。
+本文针对程序验证中定理自动证明的需求，从头设计了一个分离逻辑的定理证明器。
+
+本文设计的定理证明器基于与Z3相同的SMT结构，但能够输出Coq兼容的证明项，并采用类似Smallfoot的方法验证分离逻辑命题，以试图改进现有系统在表达能力、自动化和可信性三方面不平衡的问题。
+
+其中，为了输出Coq兼容的证明项，本文详细地研究了SMT定理证明器每个组件的结构，并针对其特点给出了证明项的构造方法。最终做到了定理证明的每一步都有证明项输出。
+
+根据文中的设计，本文还初步实现了设计中一阶逻辑的证明部分，从而初步验证了设计的可行性。测试中，证明器能够全自动地证明一阶逻辑命题，并且自动构造Coq兼容的证明项，验证了其可信、自动的特点。
 
 \cnkeywords{程序验证，自动定理证明，分离逻辑，Coq兼容证明项生成}
 \end{cnabstract}
 
 \begin{abstract}
-We implemented a separation logic theorem prover for program verification from scratch. It is automatic, supports separation logic and produces Coq-compatible proof term. Compared with the existing proof system like Z3 and Coq, it tries to achieve a better balance between the ability to express, automatization and reliability.
+In this dissertation, we designed a separation logic theorem prover for program verification from scratch.
+
+Our theorem prover is a SMT solver like Z3, but it can produce Coq-compatible proof term, and proves separation logic theorem like Smallfoot. Compared with these existing proof systems, it tries to achieve a better balance between the ability to express, automatization and reliability.
+
+In order to produce Coq-compatible proof term, we emphatically explored a SMT solver, then gave a way to generate proof term for each part.
+
+We also implemented the first-order logic part of our theorem prover for testing feasibility. In testing section, our theorem prover can prove first-order logic theorem automatically, then produce Coq-compatible proof term.
 
 \keywords{Program Verification, Automatic Theorem Prover, Separation Logic, Coq-Compatible Proof Term Generation}
 \end{abstract}
