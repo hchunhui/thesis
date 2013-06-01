@@ -24,7 +24,7 @@
 \begin{description}
 \item[初始化] 对每个命题项$t_i \in T$，初始化一个集合，其初始元素为自身。
 \item[合并] 对命题中的每一个相等关系$t_p = t_q$，若$t_p$和$t_q$在不同集合$S_p$和$S_q$，则合并$S_p$和$S_q$为$S_{pq}$。
-\item[闭包] 反复对命题中出现的所有的相同的函数对$(f(x)，f(y))$，检查$x$和$y$是否在同一集合。若在，合并$f(x)$和$f(y)$所在的集合。
+\item[闭包] 反复对命题中出现的所有的相同的函数对$(f(x), f(y))$，检查$x$和$y$是否在同一集合。若在，合并$f(x)$和$f(y)$所在的集合。
 \item[判断] 对不相等关系中的每一对$(x, y)$，检查$x$和$y$是否在同一集合。若在，则产生矛盾，得到不一致证明。
 \end{description}
 
@@ -92,8 +92,11 @@ trans_eq : forall (A : Type) (x y z : A), x = y -> y = z -> x = z.
 \subfigure[查找]{
 \includegraphics[width=0.22\textwidth]{euf-find.eps}\label{euf:find}}
 \caption{带证明项的并查集}
-
 \end{figure}
 \end{description}
 
-
+最后，还剩下求闭包过程中证明项的构造问题。这是通过等词的等价替换性质实现的：
+\begin{verbatim}
+eq_ind : forall (A : Type) (x : A) (P : A -> Prop),
+       P x -> forall y : A, x = y -> P y
+\end{verbatim}
