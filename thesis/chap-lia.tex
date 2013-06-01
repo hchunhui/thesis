@@ -121,6 +121,7 @@ Lemma volatile : forall x a : Z, x <= a /\ x > a -> False .
 
 定义如下Coq引理：
 \begin{verbatim}
-Lemma branch : forall x a : Z, ( x <= a -> False ) -> ( x > a -> False ) -> False.
+Lemma branch : forall x a : Z,
+    ( x <= a -> False ) -> ( x > a -> False ) -> False.
 \end{verbatim}
 即可。
